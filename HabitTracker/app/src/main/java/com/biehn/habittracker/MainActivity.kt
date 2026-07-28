@@ -5,14 +5,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.biehn.habittracker.ui.theme.HabitTrackerTheme
@@ -24,12 +32,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            HabitTrackerTheme {
+                var dummyHabit = Habit(
+                    id = 1L,
+                    title = "아침 찬물 샤워",
+                    description = "NMT 방어용",
+                    isCompletedToday = false,
+                    startDate = LocalDate.now(),
+                    endDate = null,
+                    priority = 1,
+                    displayOrder = 1,
+                    repetitionDays = 1,
+                    alarmTime = LocalTime.of(7, 0)
+                )
 
-
-
-
-
-
+                HabitItemCard(habit = dummyHabit)
+            }
         }
     }
 }
@@ -50,19 +68,42 @@ data class Habit(
     var isAlarmOn: Boolean = false,
     var alarmTime: LocalTime,
     var isPaused: Boolean = false
-    )
+)
 
 @Composable
 fun HabitItemCard(habit: Habit) {
+    var isChecked by remember { mutableStateOf(habit.isCompletedToday) }
     Card(
-        modifier = Modifier.fillMaxWidth().padding(8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isChecked) Color.hsl(
+                120f,
+                0.5f,
+                0.9f
+            ) else Color.LightGray
+        )
     ) {
-        Column(
+        Row(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = habit.title)
-            Text(text = habit.description)
-            Text(text = "우선순위: ${habit.priority} | )
+
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(text = habit.title)
+                Text(text = habit.description)
+                Text(text = "연속 성공: ${habit.successCount}회 | NMT 위험도: ${habit.failCount}")
+            }
+
+            Checkbox(
+                checked = isChecked,
+                onCheckedChange = {
+                    isChecked = it
+                }
+            )
+
         }
     }
 }
