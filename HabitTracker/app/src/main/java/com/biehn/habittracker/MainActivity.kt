@@ -30,6 +30,8 @@ import com.biehn.habittracker.ui.theme.HabitTrackerTheme
 import java.time.LocalDate
 import java.time.LocalTime
 import androidx.compose.foundation.lazy.items
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,8 +46,11 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@Entity(tableName = "habits")
 data class Habit(
+    @PrimaryKey(autoGenerate = true)
     val id: Long,
+
     var title: String,
     var description: String,
     val startDate: LocalDate,
