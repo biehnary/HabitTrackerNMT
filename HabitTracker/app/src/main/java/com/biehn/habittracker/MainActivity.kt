@@ -46,29 +46,11 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@Entity(tableName = "habits")
-data class Habit(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
-
-    var title: String,
-    var description: String,
-    val startDate: LocalDate,
-    var endDate: LocalDate?,
-    var failCount: Int = 0,
-    var successCount: Int = 0,
-    var priority: Int,
-    var displayOrder: Int,
-    var isCompletedToday: Boolean = false,
-    var repetitionDays: Int,
-    var isAlarmOn: Boolean = false,
-    var alarmTime: LocalTime,
-    var isPaused: Boolean = false
-)
-
 @Composable
-fun HabitItemCard(habit: Habit,
-                  onToggle: (Long) -> Unit) {
+fun HabitItemCard(
+    habit: Habit,
+    onToggle: (Habit) -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,7 +78,7 @@ fun HabitItemCard(habit: Habit,
             Checkbox(
                 checked = habit.isCompletedToday,
                 onCheckedChange = {
-                    onToggle(habit.id)
+                    onToggle(habit)
                 }
             )
         }
@@ -107,10 +89,12 @@ fun HabitItemCard(habit: Habit,
 fun HabitListScreen(viewModel: HabitViewModel = viewModel()) {
     val habitList by viewModel.habits.collectAsState()
     LazyColumn {
-        items(habitList){ habit ->
-            HabitItemCard(habit = habit,
-                onToggle = {clickedId->
-                    viewModel.toggleHabitCompletion(clickedId)}
+        items(habitList) { habit ->
+            HabitItemCard(
+                habit = habit,
+                onToggle = { clickedHabit ->
+                    viewModel.toggleHabitCompletion(clickedHabit)
+                }
             )
         }
     }
