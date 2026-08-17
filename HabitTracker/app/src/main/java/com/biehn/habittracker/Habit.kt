@@ -21,6 +21,6 @@ data class Habit(
     var isCompletedToday: Boolean = false,
     var repetitionDays: Int,
     var isAlarmOn: Boolean = false,
-    var alarmTime: LocalTime,
+    var alarmTime: LocalTime = LocalTime.of(9, 0),
     var isPaused: Boolean = false
 )

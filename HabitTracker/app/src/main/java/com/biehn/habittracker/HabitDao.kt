@@ -12,7 +12,7 @@ interface HabitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE )
     suspend fun insertHabit(habit: Habit)
 
-    @Query("select * from habits")
+    @Query("select * from habits order by displayOrder ASC")
     fun getAllHabits(): Flow<List<Habit>>
 
 }
